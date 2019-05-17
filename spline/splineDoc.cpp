@@ -129,7 +129,7 @@ int CSplineDoc::GetPoint(CPoint pt, double rad)
 {
 	if(m_surf)
 		return -1;
-	for(int i=0; i < m_pAct->m_arCarcas.size(); i++)
+	for(int i=0; i < static_cast<int>(m_pAct->m_arCarcas.size()); i++)
 	{
 		CSize sz = pt - m_pAct->m_arCarcas[i];
 		if( ( sz.cx * sz.cx + sz.cy * sz.cy ) < (rad*rad) )

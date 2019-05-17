@@ -26,7 +26,7 @@ CBezierSpline::~CBezierSpline()
 
 }
 
-void CBezierSpline::Create(unsigned nDegu, unsigned nDegv, const Array2D<CPoint3D>& arr, int nu, int nv, SPSTATE xclose, SPSTATE yclose)
+void CBezierSpline::Create(unsigned /*nDegu*/, unsigned /*nDegv*/, const Array2D<CPoint3D>& arr, int nu, int nv, SPSTATE xclose, SPSTATE yclose)
 {
 	m_nDegu		= 3;
 	m_nDegv		= 3;
@@ -75,7 +75,6 @@ void CBezierSpline::Create(unsigned nDegu, unsigned nDegv, const Array2D<CPoint3
 	for(int i=0; i<numu; i ++)
 		for(int j=0; j<numv; j ++)
 		{
-			CPoint3D pt = arr(0,0);
 			arTmp.Copy(arr, i, j, m_nDegu+1, m_nDegv+1);
 		
 			for(int k=0; k<nu+2; k ++)
@@ -114,22 +113,22 @@ void CBezierSpline::Draw(CDC* pDC)
 			pDC->SelectObject(&pen);
 			for(int k=0; k< m_nexpoint.cx+2; k ++)
 			{
-				CPoint3D pt = m_arPoint(i*(m_nexpoint.cx+1)+k,j*(m_nexpoint.cy+1));
-				pDC->MoveTo(pt.m_x+shift.cx, pt.m_y+shift.cy);
+				CPoint3D ptStart = m_arPoint(i*(m_nexpoint.cx+1)+k,j*(m_nexpoint.cy+1));
+				pDC->MoveTo(static_cast<int>(ptStart.m_x)+shift.cx, static_cast<int>(ptStart.m_y)+shift.cy);
 				for(int l=0; l<m_nexpoint.cy+2; l ++)
 				{
-					CPoint3D pt = m_arPoint(i*(m_nexpoint.cx+1)+k,j*(m_nexpoint.cy+1)+l);
-					pDC->LineTo(pt.m_x+shift.cx, pt.m_y+shift.cy);
+					CPoint3D ptNext = m_arPoint(i*(m_nexpoint.cx+1)+k,j*(m_nexpoint.cy+1)+l);
+					pDC->LineTo(static_cast<int>(ptNext.m_x)+shift.cx, static_cast<int>(ptNext.m_y)+shift.cy);
 				}
 			}
 			for(int l=0; l< m_nexpoint.cy+2; l ++)
 			{
-				CPoint3D pt = m_arPoint(i*(m_nexpoint.cx+1),j*(m_nexpoint.cy+1)+l);
-				pDC->MoveTo(pt.m_x+shift.cx, pt.m_y+shift.cy);
+				CPoint3D ptStart = m_arPoint(i*(m_nexpoint.cx+1),j*(m_nexpoint.cy+1)+l);
+				pDC->MoveTo(static_cast<int>(ptStart.m_x)+shift.cx, static_cast<int>(ptStart.m_y)+shift.cy);
 				for(int k=0; k<m_nexpoint.cx+2; k ++)
 				{
-					CPoint3D pt = m_arPoint(i*(m_nexpoint.cx+1)+k,j*(m_nexpoint.cy+1)+l);
-					pDC->LineTo(pt.m_x+shift.cx, pt.m_y+shift.cy);
+					CPoint3D ptNext = m_arPoint(i*(m_nexpoint.cx+1)+k,j*(m_nexpoint.cy+1)+l);
+					pDC->LineTo(static_cast<int>(ptNext.m_x)+shift.cx, static_cast<int>(ptNext.m_y)+shift.cy);
 				}
 			}
 		}
@@ -137,18 +136,18 @@ void CBezierSpline::Draw(CDC* pDC)
 	pen.DeleteObject();
 	pen.CreatePen(PS_SOLID, 2, RGB(127, 127, 127)); 
 	pDC->SelectObject(&pen);
-	for(unsigned i=0; i<m_arCarcas.SizeX();i++)
+	for(int i=0; i<m_arCarcas.SizeX();i++)
 	{
-		pDC->MoveTo(m_arCarcas(i,1).m_x+shift.cx, m_arCarcas(i,1).m_y+shift.cy); 
+		pDC->MoveTo(static_cast<int>(m_arCarcas(i,1).m_x)+shift.cx, static_cast<int>(m_arCarcas(i,1).m_y)+shift.cy);
 		for(int j=1; j<m_arCarcas.SizeY()-1;j++)
-			pDC->LineTo(m_arCarcas(i,j).m_x+shift.cx, m_arCarcas(i,j).m_y+shift.cy);
+			pDC->LineTo(static_cast<int>(m_arCarcas(i,j).m_x)+shift.cx, static_cast<int>(m_arCarcas(i,j).m_y)+shift.cy);
 	}
-	for(unsigned i=1; i<m_arCarcas.SizeY()-1;i++)
+	for(int i=1; i<m_arCarcas.SizeY()-1;i++)
 	{
-		pDC->MoveTo(m_arCarcas(0,i).m_x+shift.cx, m_arCarcas(0,i).m_y+shift.cy); 
+		pDC->MoveTo(static_cast<int>(m_arCarcas(0,i).m_x)+shift.cx, static_cast<int>(m_arCarcas(0,i).m_y)+shift.cy);
 		for(int j=0; j<m_arCarcas.SizeX();j++)
-			pDC->LineTo(m_arCarcas(j,i).m_x+shift.cx, m_arCarcas(j,i).m_y+shift.cy);
-		pDC->LineTo(m_arCarcas(0,i).m_x+shift.cx, m_arCarcas(0,i).m_y+shift.cy);
+			pDC->LineTo(static_cast<int>(m_arCarcas(j,i).m_x)+shift.cx, static_cast<int>(m_arCarcas(j,i).m_y)+shift.cy);
+		pDC->LineTo(static_cast<int>(m_arCarcas(0,i).m_x)+shift.cx, static_cast<int>(m_arCarcas(0,i).m_y)+shift.cy);
 	}
 	pDC->SelectObject(ppenOld);
 } 

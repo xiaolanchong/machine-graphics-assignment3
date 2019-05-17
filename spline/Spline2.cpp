@@ -24,8 +24,8 @@ CSpline::CSpline(int PtNum, CPoint Center)
    PointCoord = new CPoint[PointNum]; 
 
    for(int i=0; i<PointNum; i++)
-   { PointCoord[i].x = Center.x + 150*cos(2*pi*i/PointNum);
-     PointCoord[i].y = Center.y + 150*sin(2*pi*i/PointNum);
+   { PointCoord[i].x = Center.x + static_cast<int>(150*cos(2*pi*i/PointNum));
+     PointCoord[i].y = Center.y + static_cast<int>(150*sin(2*pi*i/PointNum));
    }
 }
 
@@ -60,19 +60,19 @@ void CSpline::DrawSpline(CDC *pDC, int ShowCarcas)
 	
 	BSplineCom(PointCoord, 0, 0, r);
 	r0[0] = r[0]; r0[1] = r[1];
-	pDC->MoveTo(r[0], r[1]);
+	pDC->MoveTo(static_cast<int>(r[0]), static_cast<int>(r[1]));
     
 	for(int j=0; j</*PointNum*/1; j++)
 	 for(int i=0; i<N; i++)	 
 	 { t = dt*i;
 	   BSplineCom(PointCoord, j, t, r);
-	   pDC->LineTo(r[0], r[1]);
+	   pDC->LineTo(static_cast<int>(r[0]), static_cast<int>(r[1]));
 	 }  
-       pDC->LineTo(r0[0], r0[1]);
+       pDC->LineTo(static_cast<int>(r0[0]), static_cast<int>(r0[1]));
 	   pDC->SelectObject(pPen);
 } 
 
-void CSpline::BSplineCom(CPoint *PointCoord, int i, double t, double r[])
+void CSpline::BSplineCom(CPoint *pointCoord, int i, double t, double r[])
 { double t2 = pow(t, 2), t3 = pow(t, 3);
   double b0 = (1-3*t+3*t2-t3)/6;
   double b1 = (4-6*t2+3*t3)/6;
@@ -82,6 +82,6 @@ void CSpline::BSplineCom(CPoint *PointCoord, int i, double t, double r[])
   if(i+1>=PointNum)i1 = i+1-PointNum;else i1 = i+1;
   if(i+2>=PointNum)i2 = i+2-PointNum;else i2 = i+2;
   if(i+3>=PointNum)i3 = i+3-PointNum;else i3 = i+3;
-  r[0] = PointCoord[i].x*b0 + PointCoord[i1].x*b1 + PointCoord[i2].x*b2 + PointCoord[i3].x*b3;
-  r[1] = PointCoord[i].y*b0 + PointCoord[i1].y*b1 + PointCoord[i2].y*b2 + PointCoord[i3].y*b3;
+  r[0] = pointCoord[i].x*b0 + pointCoord[i1].x*b1 + pointCoord[i2].x*b2 + pointCoord[i3].x*b3;
+  r[1] = pointCoord[i].y*b0 + pointCoord[i1].y*b1 + pointCoord[i2].y*b2 + pointCoord[i3].y*b3;
 }

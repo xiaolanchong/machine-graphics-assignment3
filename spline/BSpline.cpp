@@ -32,23 +32,22 @@ void	CBSpline::FillKnot(unsigned k)
 {
 	int n = m_arCarcas.size()-1;
 	int m = n+k+1;
-	int i;
 	switch(m_state)
 	{
 	case SP_BASIC:
 		m_arKnot.resize(m+1, 0.0);
-		for(i = 0; i< k+1; i++)
+		for(int i = 0; i< static_cast<int>(k)+1; i++)
 			m_arKnot[i] = 0.0;
-		for(i = k+1; i < n+1; i++  )
+		for(int i = k+1; i < n+1; i++  )
 			m_arKnot[i] = i - k;
-		for(i = n+1; i < m+1; i++)                
+		for(int i = n+1; i < m+1; i++)
 			m_arKnot[i] = n-k+1;
 		break;
 //		m_arKnot.resize(m, 0.0);
 	case SP_CLOSE:
 	case SP_PERIODIC:
 	m_arKnot.resize(m+1, 0.0);
-		for(i = 0; i < m+1 ; i++)
+		for(int i = 0; i < m+1 ; i++)
 			m_arKnot[i] = i;
 		break;
 	}
@@ -97,7 +96,7 @@ void CBSpline::Draw(CDC* pDC)
 	CPen	penSpline(PS_SOLID, 2, RGB(255,0,0));
 	CPen	penCarcas(PS_SOLID, 1, RGB(0, 0, 255));
 	ppenOld = pDC->SelectObject(&penSpline);
-	CPoint pt(0,0);
+	CPoint ptStart(0,0);
 	double maxt,mint;
 	switch(m_state)
 	{
@@ -120,57 +119,57 @@ void CBSpline::Draw(CDC* pDC)
 		}
 		break;
 	}
-	for(int i=0; i<m_arCarcas.size(); i++)
+	for(int i=0; i< static_cast<int>(m_arCarcas.size()); i++)
 	{
 		double t = GetBasisValue(i, m_nDeg, mint);
-		pt.x += m_arCarcas[i].x * GetBasisValue(i, m_nDeg, mint);
-		pt.y += m_arCarcas[i].y * GetBasisValue(i, m_nDeg, mint);
+		ptStart.x += static_cast<int>(m_arCarcas[i].x * GetBasisValue(i, m_nDeg, mint));
+		ptStart.y += static_cast<int>(m_arCarcas[i].y * GetBasisValue(i, m_nDeg, mint));
 	}
-	pDC->MoveTo(pt);
+	pDC->MoveTo(ptStart);
 	if(m_state == SP_BASIC ||m_state == SP_PERIODIC)
-	for(int i = 1; i < m_nPoint; i++)
+	for(unsigned int i = 1; i < m_nPoint; i++)
 	{
-		CPoint pt(0,0);
-		for(int j = 0; j < m_arCarcas.size(); j++)
+		CPoint ptNext(0,0);
+		for(unsigned int j = 0; j < m_arCarcas.size(); j++)
 		{
 			if(m_state == SP_BASIC && i == m_nPoint-1 && j == m_arCarcas.size()-1)
 			{
-				pt.x += m_arCarcas[j].x;
-				pt.y += m_arCarcas[j].y;
+				ptNext.x += m_arCarcas[j].x;
+				ptNext.y += m_arCarcas[j].y;
 			}
 			double t = GetBasisValue(j, m_nDeg, mint);
-			 pt.x += m_arCarcas[j].x*GetBasisValue(j, m_nDeg, mint+(maxt-mint)*i/(m_nPoint-1));
-			 pt.y += m_arCarcas[j].y*GetBasisValue(j, m_nDeg, mint+(maxt-mint)*i/(m_nPoint-1));
+			ptNext.x += static_cast<int>(m_arCarcas[j].x*GetBasisValue(j, m_nDeg, mint+(maxt-mint)*i/(m_nPoint-1)));
+			ptNext.y += static_cast<int>(m_arCarcas[j].y*GetBasisValue(j, m_nDeg, mint+(maxt-mint)*i/(m_nPoint-1)));
 		}
-		pDC->LineTo(pt);
+		pDC->LineTo(ptNext);
 	}
 	int size = m_arCarcas.size();
 	if(m_state == SP_CLOSE)
 	{
-		for(int k = 0;k<m_arCarcas.size();k++)
+		for(int k = 0;k< static_cast<int>(m_arCarcas.size());k++)
 		{
-			CPoint pt(0,0);
+			CPoint ptStartSeg(0,0);
 			pDC->SelectObject(ppenOld);
 			penSpline.DeleteObject();
 			penSpline.CreatePen(PS_SOLID, 2, RGB((k*53+100)%255, (k*91+200)%255, (k*143+300)%255));
 			pDC->SelectObject(&penSpline);
-			for(int i=k; i<m_arCarcas.size()+k; i++)
+			for(int i=k; i< static_cast<int>(m_arCarcas.size()+k); i++)
 			{
 			//	double t = GetBasisValue(i-k, m_nDeg, mint);
-				pt.x += m_arCarcas[i%size].x * GetBasisValue(i-k, m_nDeg, mint);
-				pt.y += m_arCarcas[i%size].y * GetBasisValue(i-k, m_nDeg, mint);
+				ptStartSeg.x += static_cast<int>(m_arCarcas[i%size].x * GetBasisValue(i-k, m_nDeg, mint));
+				ptStartSeg.y += static_cast<int>(m_arCarcas[i%size].y * GetBasisValue(i-k, m_nDeg, mint));
 			}
-			pDC->MoveTo(pt);
-			for(int i = 1; i < m_nPoint; i++)
+			pDC->MoveTo(ptStartSeg);
+			for(unsigned int i = 1; i < m_nPoint; i++)
 			{
-				CPoint pt(0,0);
-				for(int j = k; j < m_arCarcas.size()+k; j++)
+				CPoint ptNext(0,0);
+				for(int j = k; j < static_cast<int>(m_arCarcas.size()+k); j++)
 				{
 			//		double t = GetBasisValue(i, m_nDeg, mint);
-					 pt.x += m_arCarcas[j%size].x*GetBasisValue(j-k, m_nDeg, mint+(maxt-mint)*(i)/(m_nPoint-1));
-					 pt.y += m_arCarcas[j%size].y*GetBasisValue(j-k, m_nDeg, mint+(maxt-mint)*(i)/(m_nPoint-1));
+					ptNext.x += static_cast<int>(m_arCarcas[j%size].x*GetBasisValue(j-k, m_nDeg, mint+(maxt-mint)*(i)/(m_nPoint-1)));
+					ptNext.y += static_cast<int>(m_arCarcas[j%size].y*GetBasisValue(j-k, m_nDeg, mint+(maxt-mint)*(i)/(m_nPoint-1)));
 				}
-				pDC->LineTo(pt);
+				pDC->LineTo(ptNext);
 			}
 		}
 	}

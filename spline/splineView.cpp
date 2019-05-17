@@ -185,7 +185,7 @@ void CSplineView::SetDrag(CPoint point )
 	::ClipCursor(rc);
 }
 
-void CSplineView::DrawBSpline(CDC* pDC)
+void CSplineView::DrawBSpline(CDC* /*pDC*/)
 {
 	CSplineDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
@@ -239,7 +239,7 @@ void CSplineView::OnTimer(UINT nIDEvent)
 }
 
 
-BOOL CSplineView::OnEraseBkgnd(CDC* pDC)
+BOOL CSplineView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return TRUE;

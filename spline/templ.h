@@ -20,8 +20,8 @@ public:
 	Array2D& operator=(const Array2D& arr);
 	void	Alloc(int nx, int ny);
 	virtual ~Array2D();
-	T&	operator()(int x, int y) throw(std::exception);
-	const T&	operator()(int x, int y) const throw(std::exception);
+	T&	operator()(int x, int y);
+	const T&	operator()(int x, int y) const;
 	void	Copy(const Array2D& arr, int x, int y, int sizex, int sizey);
 	int SizeX() const { return m_sizex; };
 	int SizeY() const { return m_sizey; };
